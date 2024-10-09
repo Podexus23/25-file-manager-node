@@ -6,7 +6,7 @@
     User can't go upper than root directory (e.g. on Windows it's current local drive root). If user tries to do so, current working directory doesn't change
  */
 
-import { homedir } from "node:os";
+import os, { homedir } from "node:os";
 import { stdin } from "node:process";
 
 const userData = {
@@ -47,6 +47,43 @@ function printWorkingDirectory(path) {
   console.log(`You are currently in ${path}`);
 }
 
+// OS OPERATIONS --------------------------------------
+function osOps(flag) {
+  switch (flag) {
+    case "--EOL": {
+      if (os.EOL == "\r\n") console.log("On this system EOL is '\\r\\n'");
+      if (os.EOL == "\n") console.log("On this system EOL is '\\n'");
+      break;
+    }
+    case "--cpus": {
+      let cpusData = os.cpus();
+      console.log(`Overall amount of logical CPUs: ${cpusData.length} GHz`);
+      console.log("Models:");
+      for (let cpu of cpusData) {
+        console.log(`${cpu.model.trim()}. Speed: ${cpu.speed / 1000}`);
+      }
+      break;
+    }
+    case "--homedir": {
+      console.log(os.homedir());
+      break;
+    }
+    case "--username": {
+      console.log(os.hostname());
+      break;
+    }
+    case "--architecture": {
+      console.log(os.arch());
+      break;
+    }
+    default: {
+      console.log(
+        "No such flag for os command, try one of these: --EOL, --cpus, --homedir, --username, --architecture"
+      );
+    }
+  }
+}
+
 function main() {
   // START PROGRAM
   setUserName();
@@ -57,8 +94,16 @@ function main() {
    * At the start of the program and after each end of input/operation current working directory should be printed in following way:
     You are currently in path_to_working_directory\
    */
-  //MID PROGRAM CYCLE
+  //! TEST CASES ------------------------------------
+  // osOps("--EOL");
+  // osOps("--cpus");
+  // osOps("--homedir");
+  // osOps("--username");
+  // osOps("--architecture");
+  // osOps("--archites");
+  //!MID PROGRAM CYCLE
   let inputData;
+  let exitFlag = 0;
   //start working with cycle
   stdin.setEncoding("utf-8");
   stdin.on("data", (data) => {
@@ -70,8 +115,7 @@ function main() {
       process.exit(0);
     }
   });
-  //----------------------------------------------------------------------
-  //END of PROGRAM
+  //!END of PROGRAM----------------------------------------------------------------------
   process.on("SIGINT", (signal) => {
     printGoodBye(userData.userName);
     process.exit(0);

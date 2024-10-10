@@ -45,38 +45,6 @@ export async function createFileOp(name) {
   }
 }
 
-export async function renameFileOp(oldName, newName) {
-  const fileSrc = resolve(oldName);
-  const newNameDest = resolve(dirname(fileSrc), newName);
-
-  try {
-    await access(fileSrc);
-  } catch (error) {
-    if (error.code == "ENOENT")
-      throw new Error(`FS operation failed: src file don't exists`);
-    else console.log(error);
-    return 1;
-  }
-
-  try {
-    await access(fileDest);
-    throw new Error(`FS operation failed: dest file already exists`);
-  } catch (error) {
-    if (error.code == "ENOENT") {
-      await rename(fileSrc, newNameDest);
-      console.log("file renamed");
-    } else {
-      console.error(error.message);
-    }
-  }
-}
-
-export async function coptFileOp(path, newPath) {
-  console.log(`hello from another func coptFileOp`);
-}
-export async function moveFileOp(path, newPath) {
-  console.log(`hello from another func moveFileOp`);
-}
 export async function deleteFileOp(path) {
   if (!path) {
     console.error("em: undefined or wrong path.");
@@ -93,4 +61,45 @@ export async function deleteFileOp(path) {
   } finally {
     printWorkingDirectory();
   }
+}
+
+export async function renameFileOp(oldName, newName) {
+  //!check for valuable filename
+  if (!oldName || !newName) {
+    console.error("rn: undefined or wrong path.");
+    return;
+  }
+
+  const fileSrc = resolve(oldName);
+  const newNameDest = resolve(dirname(fileSrc), newName);
+
+  try {
+    await access(fileSrc);
+  } catch (error) {
+    if (error.code == "ENOENT")
+      console.error(`rn failed: src file don't exists`);
+    else console.error(error.message);
+    return 1;
+  }
+
+  try {
+    await access(newNameDest);
+    throw new Error(`rn failed: file ${newName} already exists`);
+  } catch (error) {
+    if (error.code == "ENOENT") {
+      await rename(fileSrc, newNameDest);
+      console.error("rn:file renamed");
+    } else {
+      console.error(error.message);
+    }
+  } finally {
+    printWorkingDirectory();
+  }
+}
+
+export async function coptFileOp(path, newPath) {
+  console.log(`hello from another func coptFileOp`);
+}
+export async function moveFileOp(path, newPath) {
+  console.log(`hello from another func moveFileOp`);
 }

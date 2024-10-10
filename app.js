@@ -1,6 +1,5 @@
 import { homedir } from "node:os";
 import { stdin } from "node:process";
-import fs from "fs/promises";
 
 import { osOps } from "./modules/osOps.js";
 import {
@@ -55,20 +54,20 @@ async function commandsController(data) {
   if (sortedInputData[0] == "os") osOps(sortedInputData[1]);
   if (sortedInputData[0] == "up") {
     pathUp();
-    // printWorkingDirectory(userData.currentDir);
+    printWorkingDirectory(userData.currentDir);
   }
   if (sortedInputData[0] == "cd") {
     await goToPath(sortedInputData[1]);
-    // printWorkingDirectory(userData.currentDir);
+    printWorkingDirectory(userData.currentDir);
   }
   if (sortedInputData[0] == "ls") {
     await showCurrentLs();
-    // printWorkingDirectory(userData.currentDir);
+    printWorkingDirectory(userData.currentDir);
   }
   if (sortedInputData[0] == "hash") {
     const hashRes = await hashOps(sortedInputData[1]);
     if (hashRes) console.log(hashRes);
-    // printWorkingDirectory(userData.currentDir);
+    printWorkingDirectory(userData.currentDir);
   }
   //basic ops with files
   if (sortedInputData[0] == "cat") {
@@ -94,7 +93,6 @@ async function commandsController(data) {
   }
   if (sortedInputData[0] == "decompress") {
   }
-  printWorkingDirectory(userData.currentDir);
   //check for exit
   if (inputData == ".exit" || sortedInputData[0] == ".exit") {
     printGoodBye(userData.userName);

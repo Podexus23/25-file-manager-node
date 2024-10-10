@@ -9,6 +9,7 @@ import {
   printWorkingDirectory,
 } from "./modules/printOps.js";
 import { goToPath, pathUp, showCurrentLs } from "./modules/pathAndLsOps.js";
+import { hashOps } from "./modules/hashOps.js";
 
 export const userData = {
   userName: "Username",
@@ -54,6 +55,10 @@ async function commandsController(data) {
   }
   if (sortedInputData[0] == "ls") {
     await showCurrentLs();
+    printWorkingDirectory(userData.currentDir);
+  }
+  if (sortedInputData[0] == "hash") {
+    await hashOps(sortedInputData[1]);
     printWorkingDirectory(userData.currentDir);
   }
   //check for exit

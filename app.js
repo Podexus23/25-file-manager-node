@@ -10,6 +10,14 @@ import {
 } from "./modules/printOps.js";
 import { goToPath, pathUp, showCurrentLs } from "./modules/pathAndLsOps.js";
 import { hashOps } from "./modules/hashOps.js";
+import {
+  coptFileOp,
+  createFileOp,
+  deleteFileOp,
+  moveFileOp,
+  readFileOp,
+  renameFileOp,
+} from "./modules/mngOps.js";
 
 export const userData = {
   userName: "Username",
@@ -47,20 +55,45 @@ async function commandsController(data) {
   if (sortedInputData[0] == "os") osOps(sortedInputData[1]);
   if (sortedInputData[0] == "up") {
     pathUp();
-    printWorkingDirectory(userData.currentDir);
+    // printWorkingDirectory(userData.currentDir);
   }
   if (sortedInputData[0] == "cd") {
     await goToPath(sortedInputData[1]);
-    printWorkingDirectory(userData.currentDir);
+    // printWorkingDirectory(userData.currentDir);
   }
   if (sortedInputData[0] == "ls") {
     await showCurrentLs();
-    printWorkingDirectory(userData.currentDir);
+    // printWorkingDirectory(userData.currentDir);
   }
   if (sortedInputData[0] == "hash") {
     await hashOps(sortedInputData[1]);
-    printWorkingDirectory(userData.currentDir);
+    // printWorkingDirectory(userData.currentDir);
   }
+  //basic ops with files
+  if (sortedInputData[0] == "cat") {
+    readFileOp(sortedInputData[1]);
+  }
+  if (sortedInputData[0] == "add") {
+    createFileOp(sortedInputData[1]);
+  }
+  if (sortedInputData[0] == "rn") {
+    renameFileOp(sortedInputData[1], sortedInputData[2]);
+  }
+  if (sortedInputData[0] == "cp") {
+    coptFileOp(sortedInputData[1], sortedInputData[2]);
+  }
+  if (sortedInputData[0] == "mv") {
+    moveFileOp(sortedInputData[1], sortedInputData[2]);
+  }
+  if (sortedInputData[0] == "rm") {
+    deleteFileOp(sortedInputData[1]);
+  }
+  //compress files
+  if (sortedInputData[0] == "compress") {
+  }
+  if (sortedInputData[0] == "decompress") {
+  }
+  await printWorkingDirectory(userData.currentDir);
   //check for exit
   if (inputData == ".exit" || sortedInputData[0] == ".exit") {
     printGoodBye(userData.userName);

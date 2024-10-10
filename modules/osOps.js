@@ -1,4 +1,4 @@
-import os, { homedir } from "node:os";
+import os from "node:os";
 
 export function osOps(flag) {
   switch (flag) {

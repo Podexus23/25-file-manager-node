@@ -66,7 +66,8 @@ async function commandsController(data) {
     // printWorkingDirectory(userData.currentDir);
   }
   if (sortedInputData[0] == "hash") {
-    await hashOps(sortedInputData[1]);
+    const hashRes = await hashOps(sortedInputData[1]);
+    if (hashRes) console.log(hashRes);
     // printWorkingDirectory(userData.currentDir);
   }
   //basic ops with files
@@ -93,7 +94,7 @@ async function commandsController(data) {
   }
   if (sortedInputData[0] == "decompress") {
   }
-  await printWorkingDirectory(userData.currentDir);
+  printWorkingDirectory(userData.currentDir);
   //check for exit
   if (inputData == ".exit" || sortedInputData[0] == ".exit") {
     printGoodBye(userData.userName);

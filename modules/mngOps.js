@@ -104,7 +104,7 @@ export async function coptFileOp(path, newPath) {
     return;
   }
   const filePath = resolve(path);
-  const copyPath = resolve(newPath);
+  const copyPath = join(resolve(newPath), basename(filePath));
 
   const rs = createReadStream(filePath);
   const ws = createWriteStream(copyPath, { flags: "wx" });
@@ -117,5 +117,24 @@ export async function coptFileOp(path, newPath) {
   ws.on("close", printWorkingDirectory);
 }
 export async function moveFileOp(path, newPath) {
-  console.log(`hello from another func moveFileOp`);
+  //!check for valuable filename
+  if (!path || !newPath) {
+    console.error("cp: undefined or wrong path.");
+    return;
+  }
+  const filePath = resolve(path);
+  const copyPath = join(resolve(newPath), basename(filePath));
+
+  const rs = createReadStream(filePath);
+  const ws = createWriteStream(copyPath, { flags: "wx" });
+
+  rs.pipe(ws);
+
+  rs.on("error", (error) => console.error(error.message));
+  ws.on("error", (error) => console.error(error.message));
+
+  ws.on("close", async () => {
+    await unlink(filePath);
+    printWorkingDirectory();
+  });
 }

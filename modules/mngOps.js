@@ -1,4 +1,4 @@
-import path, { basename, dirname, join, resolve } from "node:path";
+import path, { basename, dirname, join, relative, resolve } from "node:path";
 import { createReadStream, createWriteStream } from "node:fs";
 import { writeFile, access, rename, unlink } from "node:fs/promises";
 import { printWorkingDirectory } from "./printOps.js";
@@ -98,7 +98,23 @@ export async function renameFileOp(oldName, newName) {
 }
 
 export async function coptFileOp(path, newPath) {
-  console.log(`hello from another func coptFileOp`);
+  //!check for valuable filename
+  if (!path || !newPath) {
+    console.error("cp: undefined or wrong path.");
+    return;
+  }
+  const filePath = resolve(path);
+  const copyPath = resolve(newPath);
+
+  const rs = createReadStream(filePath);
+  const ws = createWriteStream(copyPath, { flags: "wx" });
+
+  rs.pipe(ws);
+
+  rs.on("error", (error) => console.error(error.message));
+  ws.on("error", (error) => console.error(error.message));
+
+  ws.on("close", printWorkingDirectory);
 }
 export async function moveFileOp(path, newPath) {
   console.log(`hello from another func moveFileOp`);

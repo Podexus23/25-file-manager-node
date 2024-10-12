@@ -8,6 +8,7 @@ import { nameValidator } from "./helpers.js";
 export function readFileOp(path) {
   if (!path) {
     console.error("Invalid input.\ncat: undefined or wrong data in arguments.");
+    printWorkingDirectory();
     return;
   }
 
@@ -24,11 +25,10 @@ export function readFileOp(path) {
   });
 }
 
-//!create check names for validation
-
 export async function createFileOp(name) {
   if (!name) {
     console.error("Invalid input.\nadd: undefined or wrong data in arguments.");
+    printWorkingDirectory();
     return;
   }
 
@@ -66,9 +66,9 @@ export async function deleteFileOp(path) {
 }
 
 export async function renameFileOp(oldName, newName) {
-  //!check for valuable filename
   if (!oldName || !newName) {
-    console.error("rn: undefined or wrong path.");
+    console.error("Invalid input.\nrn: undefined or wrong data in arguments.");
+    printWorkingDirectory();
     return;
   }
 
@@ -77,22 +77,24 @@ export async function renameFileOp(oldName, newName) {
 
   try {
     await access(fileSrc);
+    nameValidator(newName);
   } catch (error) {
     if (error.code == "ENOENT")
-      console.error(`rn failed: src file don't exists`);
-    else console.error(error.message);
+      console.error(`Operation failed.\nrn: ${error.message}`);
+    else console.error(`Operation failed.\nrn: ${error.message}`);
+    printWorkingDirectory();
     return 1;
   }
 
   try {
     await access(newNameDest);
-    throw new Error(`rn failed: file ${newName} already exists`);
+    throw new Error(`file ${newName} already exists`);
   } catch (error) {
     if (error.code == "ENOENT") {
       await rename(fileSrc, newNameDest);
       console.log("rn:file renamed");
     } else {
-      console.error(error.message);
+      console.error(`Operation failed.\nrn: ${error.message}`);
     }
   } finally {
     printWorkingDirectory();
@@ -100,23 +102,40 @@ export async function renameFileOp(oldName, newName) {
 }
 
 export async function coptFileOp(path, newPath) {
-  //!check for valuable filename
   if (!path || !newPath) {
-    console.error("cp: undefined or wrong path.");
+    console.error("Invalid input.\ncp: undefined or wrong data in arguments.");
+    printWorkingDirectory();
     return;
   }
   const filePath = resolve(path);
   const copyPath = join(resolve(newPath), basename(filePath));
+  //flag for checking errors, if its 1, function dont show other errors
+  let errCheck = 0;
 
   const rs = createReadStream(filePath);
   const ws = createWriteStream(copyPath, { flags: "wx" });
 
+  rs.on("error", (error) => {
+    console.error(`Operation failed.\ncp: ${error.message}`);
+    errCheck = 1;
+    printWorkingDirectory();
+  });
+  ws.on("error", (error) => {
+    if (!errCheck) {
+      console.error(`Operation failed.\ncp: ${error.message}`);
+      printWorkingDirectory();
+    }
+    errCheck = 1;
+  });
+
+  ws.on("close", () => {
+    if (!errCheck) {
+      console.log(`File ${basename(path)} copied to ${dirname(copyPath)}`);
+      printWorkingDirectory();
+    }
+  });
+
   rs.pipe(ws);
-
-  rs.on("error", (error) => console.error(error.message));
-  ws.on("error", (error) => console.error(error.message));
-
-  ws.on("close", printWorkingDirectory);
 }
 export async function moveFileOp(path, newPath) {
   //!check for valuable filename

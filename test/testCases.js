@@ -19,14 +19,14 @@ import { join } from "node:path";
  * if file already exists Error(Operation failed: file with that name already exists)+
  *
  * rn
- * empty check for both Error(Invalid input)
- * validation check for second Error(Invalid input)
- * if no such path Error(Operation failed: wrong path)
- * if file already exists Error(Operation failed: file with that name already exists)
+ * empty check for both Error(Invalid input)+
+ * validation check for second Error(Invalid input)+
+ * if no such path Error(Operation failed: wrong path)+
+ * if file already exists Error(Operation failed: file with that name already exists)+
  *
  * cp
- * empty check for both Error(Invalid input)
- * if no such path for first Error(Operation failed: wrong path)
+ * empty check for both Error(Invalid input)+
+ * if no such path for first Error(Operation failed: wrong path)+
  * if no such path for second Error(Operation failed: wrong path)
  * if fileName already exists Error(Operation failed: file with that name already exists)
  *
@@ -107,25 +107,74 @@ async function workWithFilesTest(arg) {
   const name = "testMegaSuperFile.txt";
   // cat
   if (arg == "cat") {
+    //create file to check
     await createFileToTest();
-    commandsController("cat"); //check for invalid input
-    commandsController("cat      "); //check for invalid input
-    await commandsController("cat someFantasticNameForAFile.txt"); //check for fake file
-    await commandsController(`cat ${name}`); //check for real file
+    //check for invalid input
+    await commandsController("cat");
+    await commandsController("cat      ");
+    //check for fake file
+    await commandsController("cat someFantasticNameForAFile.txt");
+    //check for normal file
+    await commandsController(`cat ${name}`);
+    //remove file from system
     setTimeout(async (handler) => {
-      await commandsController(`rm ${name}`); //remove file from system
+      await commandsController(`rm ${name}`);
     }, 1000);
   }
   if (arg == "add") {
+    //create file to check
     await createFileToTest();
-    await commandsController("add"); //check for invalid input
-    await commandsController("add      "); //check for invalid input
-    await commandsController("add someFantasti>cNameForAFile.txt"); //check for not valid name
-    await commandsController(`add ${name}`); //check for already made file
+    //check for invalid input
+    await commandsController("add");
+    await commandsController("add      ");
+    //check for invalid name
+    await commandsController("add someFantasti>cNameForAFile.txt");
+    //check for already made files
+    await commandsController(`add ${name}`);
+    //normal check
     await commandsController("add normal.txt");
     setTimeout(async (handler) => {
       await commandsController(`rm ${name}`); //remove file from system
       await commandsController(`rm normal.txt`); //remove file from system
+    }, 1000);
+  }
+  if (arg == "rn") {
+    //create file to check
+    await createFileToTest();
+    //check for invalid input
+    await commandsController("rn");
+    await commandsController(`rn ${name}     `);
+    //check for invalid name
+    await commandsController(
+      "rn someFantasti>cNameForAFile.txt someFantasti>cNameForAFip.txt"
+    );
+    //check for already made files
+    await commandsController(`rn ${name} ${name}`);
+    //normal check
+    await commandsController("add normal.txt");
+    await commandsController("rn normal.txt renamed.txt");
+    setTimeout(async (handler) => {
+      await commandsController(`rm ${name}`); //remove file from system
+      await commandsController(`rm renamed.txt`); //remove file from system
+    }, 1000);
+  }
+  if (arg == "cp") {
+    //create file to check
+    await createFileToTest();
+    //check for invalid input
+    await commandsController("cp");
+    await commandsController(`cp ${name}     `);
+    //check for invalid name
+    await commandsController("cp someFantasti>cNameForAFile.txt source");
+    await commandsController(`cp ${name} source2`);
+
+    //normal check
+    await commandsController(`cp ${name} source`);
+    //check for already made files
+    await commandsController(`cp ${name} source`);
+    setTimeout(async (handler) => {
+      await commandsController(`rm source/${name}`); //remove file from system
+      await commandsController(`rm ${name}`); //remove file from system
     }, 1000);
   }
 }
@@ -136,9 +185,9 @@ export async function runTest() {
   // osTest();
   // hashTest();
   // await workWithFilesTest("cat");
-  await workWithFilesTest("add");
+  // await workWithFilesTest("add");
   // await workWithFilesTest("rn");
   // await workWithFilesTest("cp");
-  // await workWithFilesTest("mv");
+  await workWithFilesTest("mv");
   // await workWithFilesTest("rm");
 }

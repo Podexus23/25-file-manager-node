@@ -1,12 +1,7 @@
-import path, { basename, dirname, join, resolve } from "node:path";
+import { basename, extname, resolve } from "node:path";
 import { createReadStream, createWriteStream } from "node:fs";
-import { writeFile, access, rename, unlink } from "node:fs/promises";
 import { printWorkingDirectory } from "./printOps.js";
-import {
-  createBrotliCompress,
-  createBrotliDecompress,
-  createGzip,
-} from "node:zlib";
+import { createBrotliCompress, createBrotliDecompress } from "node:zlib";
 
 export async function compressFileBrotli(file, destFile) {
   //!check for valuable filename
@@ -16,7 +11,7 @@ export async function compressFileBrotli(file, destFile) {
   }
 
   const filePath = resolve(file);
-  const destArch = resolve(destFile);
+  const destArch = resolve(destFile, basename(file), "bcz");
 
   const rs = createReadStream(filePath);
   const ws = createWriteStream(destArch);
@@ -42,7 +37,7 @@ export async function decompressFileBrotli(file, destFile) {
   }
 
   const archPath = resolve(file);
-  const destPath = resolve(destFile);
+  const destPath = resolve(destFile, basename(file, extname(file)));
 
   const rs = createReadStream(archPath);
   const ws = createWriteStream(destPath);

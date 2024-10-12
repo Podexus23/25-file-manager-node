@@ -4,7 +4,9 @@ import { createReadStream } from "fs";
 
 export async function hashOps(path) {
   if (!path) {
-    console.error("hash: undefined or wrong path.");
+    console.error(
+      "Invalid input.\nhash: undefined or wrong data in arguments."
+    );
     return;
   }
   const absolutePath = resolve(path);
@@ -15,6 +17,6 @@ export async function hashOps(path) {
     rs.on("error", (err) => reject(err));
     rs.on("data", (chunk) => hash.update(chunk));
     rs.on("end", () => resolve(hash.digest("hex")));
-  }).catch((err) => console.error(err.message));
+  }).catch((err) => console.error(`Operation failed.\nhash: ${err.message}`));
   return await prom;
 }

@@ -38,12 +38,6 @@ import { commandsController } from "../modules/controller.js";
  * empty check for both Error(Invalid input)
  * if no such path for first Error(Operation failed: wrong path)
  *
- *
- * HASH
- * hash
- * empty check for both Error(Invalid input)
- * if no such path for first Error(Operation failed: wrong path)
- *
  * COMPRESS
  * compress
  * empty check for both Error(Invalid input)
@@ -85,8 +79,18 @@ function osTest() {
   commandsController("os --strange_flag");
 }
 
+async function hashTest() {
+  await commandsController("add helloFile.txt"); //create to check
+  await commandsController("hash    "); //check for invalid input
+  await commandsController("hash helloFile.txt"); //check real file
+  await commandsController("hash helloFile2.txt"); // check fake file
+
+  await commandsController("rm helloFile.txt"); //remove file from system
+}
+
 //to check each part, remove comments
 export function runTest() {
   // navigationTest();
   // osTest();
+  // hashTest();
 }

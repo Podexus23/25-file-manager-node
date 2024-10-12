@@ -10,6 +10,7 @@ import { goToPath, pathUp, showCurrentLs } from "./pathAndLsOps.js";
 import { hashOps } from "./hashOps.js";
 import { compressFileBrotli, decompressFileBrotli } from "./compressionOps.js";
 import { osOps } from "./osOps.js";
+import { printGoodBye, printWorkingDirectory } from "./printOps.js";
 
 const allCommands = {
   up: "up",
@@ -85,7 +86,7 @@ export async function commandsController(data) {
       decompressFileBrotli(sortedInputData[1], sortedInputData[2]);
       break;
     case ".exit":
-      printGoodBye(userData.userName);
+      printGoodBye();
       process.exit(0);
       break;
     case "help":

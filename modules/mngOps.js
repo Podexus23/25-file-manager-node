@@ -1,9 +1,8 @@
-import path, { basename, dirname, join, relative, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { createReadStream, createWriteStream } from "node:fs";
 import { writeFile, access, rename, unlink } from "node:fs/promises";
 import { printWorkingDirectory } from "./printOps.js";
 import { userData } from "../app.js";
-import { log } from "node:console";
 
 export function readFileOp(path) {
   if (!path) {
@@ -88,7 +87,7 @@ export async function renameFileOp(oldName, newName) {
   } catch (error) {
     if (error.code == "ENOENT") {
       await rename(fileSrc, newNameDest);
-      console.error("rn:file renamed");
+      console.log("rn:file renamed");
     } else {
       console.error(error.message);
     }

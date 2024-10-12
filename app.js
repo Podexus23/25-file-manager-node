@@ -17,11 +17,38 @@ import {
   readFileOp,
   renameFileOp,
 } from "./modules/mngOps.js";
+import {
+  compressFileBrotli,
+  decompressFileBrotli,
+} from "./modules/compressionOps.js";
+import { rm } from "node:fs";
 
 export const userData = {
   userName: "Username",
   currentDir: "",
 };
+
+const allCommands = {
+  up: "up",
+  cd: "cd path_to_directory",
+  ls: "ls",
+  cat: "cat path_to_file",
+  add: "add new_file_name",
+  rn: "rn path_to_file new_filename",
+  cp: "cp path_to_file path_to_new_directory",
+  mv: "mv path_to_file path_to_new_directory",
+  rm: "rm path_to_file",
+  os: "\tos --EOL\n\tos --cpus\n\tos --homedir\n\tos --username\n\tos --architecture",
+  hash: "hash path_to_file",
+  compress: "compress path_to_file path_to_destination",
+  decompress: "decompress path_to_file path_to_destination",
+};
+
+function getCommHelp() {
+  for (let key in allCommands) {
+    console.log(`${key}: ${allCommands[key]}`);
+  }
+}
 
 function setUserName() {
   const args = process.argv.slice(2);
@@ -50,71 +77,84 @@ function setUserDir() {
 async function commandsController(data) {
   let inputData = data.toString().trim();
   const sortedInputData = inputData.split(" ");
-  //check for operation
-  if (sortedInputData[0] == "os") osOps(sortedInputData[1]);
-  if (sortedInputData[0] == "up") {
-    pathUp();
-    printWorkingDirectory(userData.currentDir);
-  }
-  if (sortedInputData[0] == "cd") {
-    await goToPath(sortedInputData[1]);
-    printWorkingDirectory(userData.currentDir);
-  }
-  if (sortedInputData[0] == "ls") {
-    await showCurrentLs();
-    printWorkingDirectory(userData.currentDir);
-  }
-  if (sortedInputData[0] == "hash") {
-    const hashRes = await hashOps(sortedInputData[1]);
-    if (hashRes) console.log(hashRes);
-    printWorkingDirectory(userData.currentDir);
-  }
-  //basic ops with files
-  if (sortedInputData[0] == "cat") {
-    readFileOp(sortedInputData[1]);
-  }
-  if (sortedInputData[0] == "add") {
-    createFileOp(sortedInputData[1]);
-  }
-  if (sortedInputData[0] == "rn") {
-    renameFileOp(sortedInputData[1], sortedInputData[2]);
-  }
-  if (sortedInputData[0] == "cp") {
-    coptFileOp(sortedInputData[1], sortedInputData[2]);
-  }
-  if (sortedInputData[0] == "mv") {
-    moveFileOp(sortedInputData[1], sortedInputData[2]);
-  }
-  if (sortedInputData[0] == "rm") {
-    deleteFileOp(sortedInputData[1]);
-  }
-  //compress files
-  if (sortedInputData[0] == "compress") {
-  }
-  if (sortedInputData[0] == "decompress") {
-  }
-  //check for exit
-  if (inputData == ".exit" || sortedInputData[0] == ".exit") {
-    printGoodBye(userData.userName);
-    process.exit(0);
+
+  // check for operation
+  switch (sortedInputData[0]) {
+    case "os":
+      osOps(sortedInputData[1]);
+      printWorkingDirectory();
+      break;
+    case "up":
+      pathUp();
+      printWorkingDirectory();
+      break;
+    case "cd":
+      await goToPath(sortedInputData[1]);
+      printWorkingDirectory();
+      break;
+    case "ls":
+      await showCurrentLs();
+      printWorkingDirectory();
+      break;
+    case "hash":
+      const hashRes = await hashOps(sortedInputData[1]);
+      if (hashRes) console.log(hashRes);
+      printWorkingDirectory();
+      break;
+    case "cat":
+      readFileOp(sortedInputData[1]);
+      break;
+    case "add":
+      createFileOp(sortedInputData[1]);
+      break;
+    case "rn":
+      renameFileOp(sortedInputData[1], sortedInputData[2]);
+      break;
+    case "cp":
+      coptFileOp(sortedInputData[1], sortedInputData[2]);
+      break;
+    case "mv":
+      moveFileOp(sortedInputData[1], sortedInputData[2]);
+      break;
+    case "rm":
+      deleteFileOp(sortedInputData[1]);
+      break;
+    case "compress":
+      compressFileBrotli(sortedInputData[1], sortedInputData[2]);
+      break;
+    case "decompress":
+      decompressFileBrotli(sortedInputData[1], sortedInputData[2]);
+      break;
+    case ".exit":
+      printGoodBye(userData.userName);
+      process.exit(0);
+      break;
+    case "help":
+      getCommHelp();
+      printWorkingDirectory();
+      break;
+
+    default:
+      console.log(
+        `Sorry, no such command as "${sortedInputData[0]}".\nType 'help' to see all available commands`
+      );
+      printWorkingDirectory();
+      break;
   }
 }
-// PATH OPERATIONS ------------------------------
 
 function main() {
-  // START PROGRAM
+  //start program
   setUserName();
   printHello(userData.userName);
   setUserDir();
   printWorkingDirectory(userData.currentDir);
-  //! TEST CASES ------------------
 
-  //!MID PROGRAM CYCLE
   //take data from terminal
   stdin.setEncoding("utf-8");
   stdin.on("data", commandsController);
 
-  //!EXIT FROM PROGRAM -------------------------------
+  //exit on ctrl+c
   process.on("SIGINT", (signal) => {
     printGoodBye(userData.userName);
     process.exit(0);

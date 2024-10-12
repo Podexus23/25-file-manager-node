@@ -49,7 +49,8 @@ export async function createFileOp(name) {
 
 export async function deleteFileOp(path) {
   if (!path) {
-    console.error("em: undefined or wrong path.");
+    console.error("Invalid input.\nrm: undefined or wrong data in arguments.");
+    printWorkingDirectory();
     return;
   }
 
@@ -59,7 +60,7 @@ export async function deleteFileOp(path) {
     await unlink(fileSrc);
     console.log(`File ${basename(fileSrc)} deleted`);
   } catch (error) {
-    console.error(error.message);
+    console.error(`Operation failed.\nrm: ${error.message}`);
   } finally {
     printWorkingDirectory();
   }
@@ -171,6 +172,7 @@ export async function moveFileOp(path, newPath) {
     try {
       if (!errCheck) {
         await unlink(filePath);
+        console.log(`File moved to ${dirname(copyPath)}`);
         printWorkingDirectory();
       }
     } catch (error) {

@@ -8,17 +8,6 @@ import { join } from "node:path";
 /**
  * BASIC WITH FILES
  *
- * mv
- * empty check for both Error(Invalid input)
- * if no such path for first Error(Operation failed: wrong path)
- * if no such path for second Error(Operation failed: wrong path)
- * if fileName already exists Error(Operation failed: file with that name already exists)
- * don't delete fucking file before checking is it can be moved
- *
- * rm
- * empty check for both Error(Invalid input)
- * if no such path for first Error(Operation failed: wrong path)
- *
  * COMPRESS
  * compress
  * empty check for both Error(Invalid input)
@@ -176,6 +165,22 @@ async function workWithFilesTest(arg) {
       // await commandsController(`rm ${name}`); //remove file from system
     }, 1000);
   }
+  if (arg == "rm") {
+    //create file to check
+    await createFileToTest();
+    //check for invalid input
+    await commandsController("rm");
+    await commandsController(`rm     `);
+    //check for invalid name
+    await commandsController("rm someFantasti>cNameForAFile.txt");
+
+    //normal check
+    await commandsController(`rm ${name}`);
+    //check for mistake
+    setTimeout(async (handler) => {
+      await commandsController(`rm ${name}`); //remove file from system
+    }, 1000);
+  }
 }
 
 //to check each part, remove comments
@@ -187,6 +192,6 @@ export async function runTest() {
   // await workWithFilesTest("add");
   // await workWithFilesTest("rn");
   // await workWithFilesTest("cp");
-  await workWithFilesTest("mv");
-  // await workWithFilesTest("rm");
+  // await workWithFilesTest("mv");
+  await workWithFilesTest("rm");
 }

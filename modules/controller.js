@@ -11,6 +11,7 @@ import { hashOps } from "./hashOps.js";
 import { compressFileBrotli, decompressFileBrotli } from "./compressionOps.js";
 import { osOps } from "./osOps.js";
 import { printGoodBye, printWorkingDirectory } from "./printOps.js";
+import { runTest } from "../test/testCases.js";
 
 const allCommands = {
   up: "up",
@@ -58,14 +59,14 @@ export async function commandsController(data) {
       break;
     case "hash":
       const hashRes = await hashOps(sortedInputData[1]);
-      if (hashRes) console.log(hashRes);
+      if (hashRes) console.log("Hash for your file\n" + hashRes);
       printWorkingDirectory();
       break;
     case "cat":
       readFileOp(sortedInputData[1]);
       break;
     case "add":
-      createFileOp(sortedInputData[1]);
+      await createFileOp(sortedInputData[1]);
       break;
     case "rn":
       renameFileOp(sortedInputData[1], sortedInputData[2]);
@@ -92,6 +93,9 @@ export async function commandsController(data) {
     case "help":
       getCommHelp();
       printWorkingDirectory();
+      break;
+    case "test":
+      runTest();
       break;
 
     default:

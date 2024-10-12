@@ -28,7 +28,7 @@ export function readFileOp(path) {
 
 export async function createFileOp(name) {
   if (!name) {
-    console.error("add: undefined or wrong name.");
+    console.error("Invalid input.\nadd: undefined or wrong data in arguments.");
     return;
   }
 
@@ -41,7 +41,7 @@ export async function createFileOp(name) {
     });
     console.log(`File ${name} created`);
   } catch (err) {
-    console.error(err.message);
+    console.error(`Operation failed.\nadd: ${err.message}`);
   } finally {
     printWorkingDirectory();
   }

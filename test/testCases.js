@@ -8,15 +8,15 @@ import { join } from "node:path";
 /**
  * BASIC WITH FILES
  *
- * cat++
- * empty check Error(Invalid input)
- * if no such path Error(Operation failed: wrong path)
- * write directory
+ * cat+++
+ * empty check Error(Invalid input)+
+ * if no such path Error(Operation failed: wrong path)+
+ * write directory+
  *
- * add
- * empty check Error(Invalid input)
- * validation check Error(Invalid input)
- * if file already exists Error(Operation failed: file with that name already exists)
+ * add+++
+ * empty check Error(Invalid input)+
+ * validation check Error(Invalid input)+
+ * if file already exists Error(Operation failed: file with that name already exists)+
  *
  * rn
  * empty check for both Error(Invalid input)
@@ -112,9 +112,21 @@ async function workWithFilesTest(arg) {
     commandsController("cat      "); //check for invalid input
     await commandsController("cat someFantasticNameForAFile.txt"); //check for fake file
     await commandsController(`cat ${name}`); //check for real file
-    setTimeout((handler) => {
-      commandsController(`rm ${name}`); //remove file from system
-    });
+    setTimeout(async (handler) => {
+      await commandsController(`rm ${name}`); //remove file from system
+    }, 1000);
+  }
+  if (arg == "add") {
+    await createFileToTest();
+    await commandsController("add"); //check for invalid input
+    await commandsController("add      "); //check for invalid input
+    await commandsController("add someFantasti>cNameForAFile.txt"); //check for not valid name
+    await commandsController(`add ${name}`); //check for already made file
+    await commandsController("add normal.txt");
+    setTimeout(async (handler) => {
+      await commandsController(`rm ${name}`); //remove file from system
+      await commandsController(`rm normal.txt`); //remove file from system
+    }, 1000);
   }
 }
 
@@ -124,7 +136,7 @@ export async function runTest() {
   // osTest();
   // hashTest();
   // await workWithFilesTest("cat");
-  // await workWithFilesTest("add");
+  await workWithFilesTest("add");
   // await workWithFilesTest("rn");
   // await workWithFilesTest("cp");
   // await workWithFilesTest("mv");

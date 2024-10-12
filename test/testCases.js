@@ -1,11 +1,14 @@
 // things to check
 
+import { createWriteStream } from "node:fs";
 import { commandsController } from "../modules/controller.js";
+import { userData } from "../app.js";
+import { join } from "node:path";
 
 /**
  * BASIC WITH FILES
  *
- * cat
+ * cat++
  * empty check Error(Invalid input)
  * if no such path Error(Operation failed: wrong path)
  * write directory
@@ -52,6 +55,16 @@ import { commandsController } from "../modules/controller.js";
  * if filename exists, add "_dc" to filename"
  */
 
+async function createFileToTest() {
+  const data = "some data to read";
+  const ws = createWriteStream(
+    join(userData.currentDir, "testMegaSuperFile.txt")
+  );
+
+  ws.write(data);
+  ws.end();
+}
+
 //NAVIGATION
 function navigationTest() {
   //run up to see diretory
@@ -85,12 +98,35 @@ async function hashTest() {
   await commandsController("hash helloFile.txt"); //check real file
   await commandsController("hash helloFile2.txt"); // check fake file
 
-  await commandsController("rm helloFile.txt"); //remove file from system
+  setTimeout(() => {
+    commandsController("rm helloFile.txt"); //remove file from system
+  });
+}
+
+async function workWithFilesTest(arg) {
+  const name = "testMegaSuperFile.txt";
+  // cat
+  if (arg == "cat") {
+    await createFileToTest();
+    commandsController("cat"); //check for invalid input
+    commandsController("cat      "); //check for invalid input
+    await commandsController("cat someFantasticNameForAFile.txt"); //check for fake file
+    await commandsController(`cat ${name}`); //check for real file
+    setTimeout((handler) => {
+      commandsController(`rm ${name}`); //remove file from system
+    });
+  }
 }
 
 //to check each part, remove comments
-export function runTest() {
+export async function runTest() {
   // navigationTest();
   // osTest();
   // hashTest();
+  // await workWithFilesTest("cat");
+  // await workWithFilesTest("add");
+  // await workWithFilesTest("rn");
+  // await workWithFilesTest("cp");
+  // await workWithFilesTest("mv");
+  // await workWithFilesTest("rm");
 }

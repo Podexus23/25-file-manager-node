@@ -3,16 +3,19 @@ import { createReadStream, createWriteStream } from "node:fs";
 import { writeFile, access, rename, unlink } from "node:fs/promises";
 import { printWorkingDirectory } from "./printOps.js";
 import { userData } from "../app.js";
+import { nameValidator } from "./helpers.js";
 
 export function readFileOp(path) {
   if (!path) {
-    console.error("cat: undefined or wrong path.");
+    console.error("Invalid input.\ncat: undefined or wrong data in arguments.");
     return;
   }
 
   const fileAbsolutePath = resolve(path);
   const rs = createReadStream(fileAbsolutePath, "utf-8");
-  rs.on("error", (err) => console.error(err.message));
+  rs.on("error", (err) =>
+    console.error(`Operation failed.\ncd: ${err.message}`)
+  );
   rs.on("data", (chunk) => {
     console.log(chunk);
   });
@@ -25,7 +28,6 @@ export function readFileOp(path) {
 
 export async function createFileOp(name) {
   if (!name) {
-    //!check for right naming
     console.error("add: undefined or wrong name.");
     return;
   }
@@ -33,6 +35,7 @@ export async function createFileOp(name) {
   const fileAbsolutePath = resolve(userData.currentDir, name);
 
   try {
+    nameValidator(name);
     await writeFile(fileAbsolutePath, "", {
       flag: "wx",
     });

@@ -4,7 +4,9 @@ import { userData } from "../app.js";
 
 export function pathUp() {
   if (path.parse(userData.currentDir).root == userData.currentDir) {
-    console.error(`You've reached the root folder ${userData.currentDir}`);
+    console.error(
+      `Operation failed.\nup: you've reached the root folder ${userData.currentDir}`
+    );
     return;
   }
   const newPath = path.dirname(userData.currentDir);
@@ -14,7 +16,7 @@ export function pathUp() {
 
 export async function goToPath(newPath) {
   if (!newPath) {
-    console.error("cd: undefined or wrong path.");
+    console.error("Invalid input.\ncd: undefined or wrong data in arguments.");
     return;
   }
   const absolutePath = path.resolve(newPath);
@@ -24,9 +26,8 @@ export async function goToPath(newPath) {
     userData.currentDir = absolutePath;
     process.chdir(userData.currentDir);
   } catch (error) {
-    console.error(error.message);
+    console.error(`Operation failed.\ncd: ${error.message}`);
   }
-  console.log(absolutePath);
 }
 
 export async function showCurrentLs() {

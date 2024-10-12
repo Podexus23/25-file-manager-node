@@ -8,28 +8,6 @@ import { join } from "node:path";
 /**
  * BASIC WITH FILES
  *
- * cat+++
- * empty check Error(Invalid input)+
- * if no such path Error(Operation failed: wrong path)+
- * write directory+
- *
- * add+++
- * empty check Error(Invalid input)+
- * validation check Error(Invalid input)+
- * if file already exists Error(Operation failed: file with that name already exists)+
- *
- * rn
- * empty check for both Error(Invalid input)+
- * validation check for second Error(Invalid input)+
- * if no such path Error(Operation failed: wrong path)+
- * if file already exists Error(Operation failed: file with that name already exists)+
- *
- * cp
- * empty check for both Error(Invalid input)+
- * if no such path for first Error(Operation failed: wrong path)+
- * if no such path for second Error(Operation failed: wrong path)
- * if fileName already exists Error(Operation failed: file with that name already exists)
- *
  * mv
  * empty check for both Error(Invalid input)
  * if no such path for first Error(Operation failed: wrong path)
@@ -63,6 +41,7 @@ async function createFileToTest() {
 
   ws.write(data);
   ws.end();
+  ws.close();
 }
 
 //NAVIGATION
@@ -175,6 +154,26 @@ async function workWithFilesTest(arg) {
     setTimeout(async (handler) => {
       await commandsController(`rm source/${name}`); //remove file from system
       await commandsController(`rm ${name}`); //remove file from system
+    }, 1000);
+  }
+  if (arg == "mv") {
+    //create file to check
+    await createFileToTest();
+    //check for invalid input
+    await commandsController("mv");
+    await commandsController(`mv ${name}     `);
+    //check for invalid name
+    await commandsController("mv someFantasti>cNameForAFile.txt source");
+    await commandsController(`mv ${name} source2`);
+
+    //normal check
+    await commandsController(`mv ${name} source`);
+    //check for already made files
+    // await createFileToTest();
+    // await commandsController(`mv ${name} source`);
+    setTimeout(async (handler) => {
+      await commandsController(`rm source/${name}`); //remove file from system
+      // await commandsController(`rm ${name}`); //remove file from system
     }, 1000);
   }
 }

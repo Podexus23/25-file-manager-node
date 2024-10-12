@@ -137,10 +137,11 @@ export async function coptFileOp(path, newPath) {
 
   rs.pipe(ws);
 }
+
 export async function moveFileOp(path, newPath) {
-  //!check for valuable filename
   if (!path || !newPath) {
-    console.error("cp: undefined or wrong path.");
+    console.error("Invalid input.\nrm: undefined or wrong data in arguments.");
+    printWorkingDirectory();
     return;
   }
   const filePath = resolve(path);
@@ -148,14 +149,33 @@ export async function moveFileOp(path, newPath) {
 
   const rs = createReadStream(filePath);
   const ws = createWriteStream(copyPath, { flags: "wx" });
+  let errCheck = 0;
+
+  rs.on("error", (error) => {
+    console.error(`Operation failed.\ncp: ${error.message}`);
+    errCheck = 1;
+    printWorkingDirectory();
+  });
+
+  ws.on("error", (error) => {
+    if (!errCheck) {
+      console.error(`Operation failed.\ncp: ${error.message}`);
+      printWorkingDirectory();
+    }
+    errCheck = 1;
+  });
 
   rs.pipe(ws);
 
-  rs.on("error", (error) => console.error(error.message));
-  ws.on("error", (error) => console.error(error.message));
-
   ws.on("close", async () => {
-    await unlink(filePath);
-    printWorkingDirectory();
+    try {
+      if (!errCheck) {
+        await unlink(filePath);
+        printWorkingDirectory();
+      }
+    } catch (error) {
+      console.error(`Operation failed.\ncp: ${error.message}`);
+      printWorkingDirectory();
+    }
   });
 }

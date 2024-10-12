@@ -17,20 +17,20 @@ export function osOps(flag) {
       break;
     }
     case "--homedir": {
-      console.log(os.homedir());
+      console.log("Home directory is:", os.homedir());
       break;
     }
     case "--username": {
-      console.log(os.hostname());
+      console.log("Host name for this PC is:", os.hostname());
       break;
     }
     case "--architecture": {
-      console.log(os.arch());
+      console.log("This Pc works on", os.arch(), "architecture");
       break;
     }
     default: {
-      console.log(
-        "No such flag for os command, try one of these: --EOL, --cpus, --homedir, --username, --architecture"
+      console.error(
+        "Invalid input.\nos: No such flag for os command, try one of these: --EOL, --cpus, --homedir, --username, --architecture"
       );
     }
   }

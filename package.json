@@ -1,0 +1,23 @@
+{
+  "name": "25-file-manager-node",
+  "version": "1.0.0",
+  "description": "file manager for RSS course",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "test",
+    "podex": "node app.js -- --username=Podexus",
+    "bold": "node app.js -- --username=",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Podexus23/25-file-manager-node.git"
+  },
+  "author": "Podexus",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Podexus23/25-file-manager-node/issues"
+  },
+  "homepage": "https://github.com/Podexus23/25-file-manager-node#readme"
+}

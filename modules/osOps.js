@@ -11,7 +11,9 @@ export function osOps(flag) {
       console.log(`Overall amount of logical CPUs: ${cpusData.length}`);
       console.log("Models:");
       for (let cpu of cpusData) {
-        console.log(`${cpu.model.trim()}. Speed: ${cpu.speed / 1000} GHz`);
+        console.log(
+          `${cpu.model.trim()}. Speed: ${(cpu.speed / 1000).toFixed(2)} GHz`
+        );
       }
       break;
     }

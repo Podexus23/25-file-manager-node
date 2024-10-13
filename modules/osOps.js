@@ -1,10 +1,9 @@
-import os from "node:os";
+import os, { EOL } from "node:os";
 
 export function osOps(flag) {
   switch (flag) {
     case "--EOL": {
-      if (os.EOL == "\r\n") console.log("On this system EOL is '\\r\\n'");
-      if (os.EOL == "\n") console.log("On this system EOL is '\\n'");
+      console.log(`On this system EOL is ${JSON.stringify(EOL)}`);
       break;
     }
     case "--cpus": {

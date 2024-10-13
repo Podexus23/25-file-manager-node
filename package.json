@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "test",
-    "start": "node app.js -- --username=Podexus",
+    "podex": "node app.js -- --username=Podexus",
     "bold": "node app.js -- --username=",
-    "nou": "node app.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",

@@ -14,8 +14,8 @@ export async function compressFileBrotli(file, destFile) {
   }
 
   const destPath = extname(destFile)
-    ? join(destFile, ".br")
-    : join(destFile, join(basename(file) + ".br"));
+    ? join(destFile + ".br")
+    : join(destFile, basename(file) + ".br");
 
   const filePath = resolve(file);
   const destArch = resolve(destPath);
@@ -26,14 +26,17 @@ export async function compressFileBrotli(file, destFile) {
   const gzip = createBrotliCompress();
 
   rs.on("error", (error) => {
-    console.error(`Operation failed.${EOL}rn: ${error.message}`);
+    console.error(`Operation failed.${EOL}compress: ${error.message}`);
     errCheck++;
   });
 
-  ws.on("error", (error) => {
-    if (!errCheck) console.error(`Operation failed.${EOL}rn: ${error.message}`);
+  gzip.on("error", (error) => {
+    if (!errCheck)
+      console.error(`Operation failed.${EOL}compress: ${error.message}`);
     errCheck++;
   });
+
+  ws.on("error", (error) => {});
 
   rs.pipe(gzip).pipe(ws);
   ws.on("close", () => {
@@ -45,7 +48,7 @@ export async function compressFileBrotli(file, destFile) {
 export async function decompressFileBrotli(file, dest) {
   if (!file || !dest) {
     console.error(
-      `Invalid input.${EOL}compress: undefined or wrong data in arguments.`
+      `Invalid input.${EOL}decompress: undefined or wrong data in arguments.`
     );
     printWorkingDirectory();
     return;
@@ -64,12 +67,19 @@ export async function decompressFileBrotli(file, dest) {
   let errCheck = 0;
 
   ws.on("error", (error) => {
-    if (!errCheck) console.error(`Operation failed.${EOL}rn: ${error.message}`);
+    if (!errCheck)
+      console.error(`Operation failed.${EOL}decompress: ${error.message}`);
+    errCheck++;
+  });
+
+  gzip.on("error", (error) => {
+    if (!errCheck)
+      console.error(`Operation failed.${EOL}decompress: ${error.message}`);
     errCheck++;
   });
 
   rs.on("error", (error) => {
-    console.error(`Operation failed.${EOL}rn: ${error.message}`);
+    console.error(`Operation failed.${EOL}decompress: ${error.message}`);
     errCheck++;
   });
 

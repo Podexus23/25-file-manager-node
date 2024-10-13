@@ -1,4 +1,4 @@
-import { homedir } from "node:os";
+import { EOL, homedir } from "node:os";
 import { platform } from "node:os";
 
 export function setUserName(userObj) {
@@ -12,7 +12,7 @@ export function setUserName(userObj) {
     //but according to the past year video of task review, it shouldn't give you a chance to use file manager without username =)
     throw new Error(
       `Invalid input: no user name${EOL}Please use ${
-        usernameArg.slice(0, -1) + "some_username"
+        usernameArg + "some_username"
       } next time`
     );
     return null;
@@ -22,9 +22,14 @@ export function setUserName(userObj) {
     .filter((e) => e.startsWith(usernameArg))[0]
     .slice(usernameArg.length);
   if (name.length == 0)
-    console.log(
-      `Empty value for ${usernameArg.slice(0, -1)}, FM will use default name`
+    throw new Error(
+      `Invalid input: no user name${EOL}Please use ${
+        usernameArg + "some_username"
+      } next time`
     );
+  // console.log(
+  //   `Empty value for ${usernameArg.slice(0, -1)}, FM will use default name`
+  // );
   else userObj.userName = name;
 }
 

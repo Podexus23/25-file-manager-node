@@ -1,56 +1,80 @@
-import { basename, extname, resolve } from "node:path";
+import { basename, extname, join, resolve } from "node:path";
 import { createReadStream, createWriteStream } from "node:fs";
 import { printWorkingDirectory } from "./printOps.js";
 import { createBrotliCompress, createBrotliDecompress } from "node:zlib";
 
 export async function compressFileBrotli(file, destFile) {
-  //!check for valuable filename
   if (!file || !destFile) {
-    console.error("cp: undefined or wrong path.");
+    console.error(
+      "Invalid input.\ncompress: undefined or wrong data in arguments."
+    );
+    printWorkingDirectory();
     return;
   }
+
+  const destPath = extname(destFile)
+    ? join(destFile, ".br")
+    : join(destFile, join(basename(file) + ".br"));
 
   const filePath = resolve(file);
-  const destArch = resolve(destFile, basename(file), "bcz");
+  const destArch = resolve(destPath);
+  let errCheck = 0;
 
   const rs = createReadStream(filePath);
-  const ws = createWriteStream(destArch);
+  const ws = createWriteStream(destArch, { flags: "wx" });
   const gzip = createBrotliCompress();
 
-  ws.on("error", (err) => {
-    console.log(err.message);
+  rs.on("error", (error) => {
+    console.error(`Operation failed.\nrn: ${error.message}`);
+    errCheck++;
   });
 
-  rs.on("error", (err) => {
-    console.log(err.message);
+  ws.on("error", (error) => {
+    if (!errCheck) console.error(`Operation failed.\nrn: ${error.message}`);
+    errCheck++;
   });
 
   rs.pipe(gzip).pipe(ws);
-  ws.on("close", printWorkingDirectory);
+  ws.on("close", () => {
+    if (!errCheck) console.log("File compressed");
+    printWorkingDirectory();
+  });
 }
 
-export async function decompressFileBrotli(file, destFile) {
-  //!check for valuable filename
-  if (!file || !destFile) {
-    console.error("cp: undefined or wrong path.");
+export async function decompressFileBrotli(file, dest) {
+  if (!file || !dest) {
+    console.error(
+      "Invalid input.\ncompress: undefined or wrong data in arguments."
+    );
+    printWorkingDirectory();
     return;
   }
 
+  const destPath = extname(dest)
+    ? join(dest)
+    : join(dest, basename(file, extname(file)));
+
   const archPath = resolve(file);
-  const destPath = resolve(destFile, basename(file, extname(file)));
+  const destFile = resolve(destPath);
 
   const rs = createReadStream(archPath);
-  const ws = createWriteStream(destPath);
+  const ws = createWriteStream(destFile, { flags: "wx" });
   const gzip = createBrotliDecompress();
+  let errCheck = 0;
 
-  ws.on("error", (err) => {
-    console.log(err.message);
+  ws.on("error", (error) => {
+    if (!errCheck) console.error(`Operation failed.\nrn: ${error.message}`);
+    errCheck++;
   });
 
-  rs.on("error", (err) => {
-    console.log(err.message);
+  rs.on("error", (error) => {
+    console.error(`Operation failed.\nrn: ${error.message}`);
+    errCheck++;
   });
 
   rs.pipe(gzip).pipe(ws);
-  ws.on("close", printWorkingDirectory);
+  ws.on("close", () => {
+    if (!errCheck) console.log("File decompressed");
+    printWorkingDirectory();
+  });
 }

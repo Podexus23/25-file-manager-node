@@ -35,9 +35,35 @@ function getCommHelp() {
   }
 }
 
+function checkSpacedPath(data) {
+  const splittedData = data.split(" ");
+  let words = [];
+  const brackets = ["'", '"', "`"];
+  let longPath = [];
+  let starter;
+
+  for (let word of splittedData) {
+    word.trim();
+    if (brackets.includes(word[0]) && !starter) {
+      longPath.push(word);
+      starter = word[0];
+    } else if (word.at(-1) === starter) {
+      let longWord;
+      longPath.push(word);
+      starter = null;
+      longWord = longPath.join(" ").slice(1, -1);
+      words.push(longWord);
+      longPath = [];
+    } else if (starter) {
+      longPath.push(word);
+    } else words.push(word);
+  }
+  return words.filter((e) => e);
+}
+
 export async function commandsController(data) {
   let inputData = data.toString().trim();
-  const sortedInputData = inputData.split(" ");
+  const sortedInputData = checkSpacedPath(inputData);
 
   // check for operation
   switch (sortedInputData[0]) {

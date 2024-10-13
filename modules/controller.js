@@ -13,6 +13,7 @@ import { osOps } from "./osOps.js";
 import { printGoodBye, printWorkingDirectory } from "./printOps.js";
 import { runTest } from "../test/testCases.js";
 import { EOL } from "node:os";
+import { normalize } from "node:path";
 
 const allCommands = {
   up: "up",
@@ -61,7 +62,7 @@ function checkSpacedPath(data) {
       longPath.push(word);
     } else words.push(word);
   }
-  return words.filter((e) => e);
+  return words.map((e) => normalize(e)).filter((e) => e);
 }
 
 export async function commandsController(data) {
@@ -123,9 +124,9 @@ export async function commandsController(data) {
       getCommHelp();
       printWorkingDirectory();
       break;
-    case "test":
-      runTest();
-      break;
+    // case "test":
+    //   runTest();
+    //   break;
 
     default:
       console.log(

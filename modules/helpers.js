@@ -5,8 +5,16 @@ export function setUserName(userObj) {
   const args = process.argv.slice(2);
   const usernameArg = "--username=";
   if (args.length < 1) {
-    console.log(`Please use ${usernameArg.slice(0, -1)} next time`);
-    console.log(`FM will use default name`);
+    //there's to possibilities i liked that one, with default username
+    // console.log(`Please use ${usernameArg.slice(0, -1)} next time`);
+    // console.log(`FM will use default name`);
+
+    //but according to the past year video of task review, it shouldn't give you a chance to use file manager without username =)
+    throw new Error(
+      `Invalid input: no user name${EOL}Please use ${
+        usernameArg.slice(0, -1) + "some_username"
+      } next time`
+    );
     return null;
   }
 

@@ -1,11 +1,12 @@
 import { resolve } from "path";
 import { createHash } from "crypto";
 import { createReadStream } from "fs";
+import { EOL } from "os";
 
 export async function hashOps(path) {
   if (!path) {
     console.error(
-      "Invalid input.\nhash: undefined or wrong data in arguments."
+      `Invalid input.${EOL}hash: undefined or wrong data in arguments.`
     );
     return;
   }
@@ -17,6 +18,8 @@ export async function hashOps(path) {
     rs.on("error", (err) => reject(err));
     rs.on("data", (chunk) => hash.update(chunk));
     rs.on("end", () => resolve(hash.digest("hex")));
-  }).catch((err) => console.error(`Operation failed.\nhash: ${err.message}`));
+  }).catch((err) =>
+    console.error(`Operation failed.${EOL}hash: ${err.message}`)
+  );
   return await prom;
 }

@@ -1,11 +1,12 @@
 import path from "path";
 import fs from "fs/promises";
 import { userData } from "../app.js";
+import { EOL } from "os";
 
 export function pathUp() {
   if (path.parse(userData.currentDir).root == userData.currentDir) {
     console.error(
-      `Operation failed.\nup: you've reached the root folder ${userData.currentDir}`
+      `Operation failed.${EOL}up: you've reached the root folder ${userData.currentDir}`
     );
     return;
   }
@@ -16,7 +17,9 @@ export function pathUp() {
 
 export async function goToPath(newPath) {
   if (!newPath) {
-    console.error("Invalid input.\ncd: undefined or wrong data in arguments.");
+    console.error(
+      `Invalid input.${EOL}cd: undefined or wrong data in arguments.`
+    );
     return;
   }
   const absolutePath = path.resolve(newPath);
@@ -26,7 +29,7 @@ export async function goToPath(newPath) {
     userData.currentDir = absolutePath;
     process.chdir(userData.currentDir);
   } catch (error) {
-    console.error(`Operation failed.\ncd: ${error.message}`);
+    console.error(`Operation failed.${EOL}cd: ${error.message}`);
   }
 }
 
@@ -45,10 +48,10 @@ export async function showCurrentLs() {
       .filter((e) => e.Type != null);
     const dir = showData
       .filter((e) => e.Type == "directory")
-      .sort((a, b) => a - b);
+      .sort((a, b) => a.Name.localeCompare(b.Name));
     const files = showData
       .filter((e) => e.Type == "file")
-      .sort((a, b) => a - b);
+      .sort((a, b) => a.Name.localeCompare(b.Name));
     const concatSortedData = [...dir, ...files];
     console.table(concatSortedData);
   } catch (error) {

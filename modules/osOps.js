@@ -31,7 +31,7 @@ export function osOps(flag) {
     }
     default: {
       console.error(
-        "Invalid input.\nos: No such flag for os command, try one of these: --EOL, --cpus, --homedir, --username, --architecture"
+        `Invalid input.${EOL}os: No such flag for os command, try one of these: --EOL, --cpus, --homedir, --username, --architecture`
       );
     }
   }

@@ -4,10 +4,13 @@ import { writeFile, access, rename, unlink } from "node:fs/promises";
 import { printWorkingDirectory } from "./printOps.js";
 import { userData } from "../app.js";
 import { nameValidator } from "./helpers.js";
+import { EOL } from "node:os";
 
 export function readFileOp(path) {
   if (!path) {
-    console.error("Invalid input.\ncat: undefined or wrong data in arguments.");
+    console.error(
+      `Invalid input.${EOL}cat: undefined or wrong data in arguments.`
+    );
     printWorkingDirectory();
     return;
   }
@@ -15,7 +18,7 @@ export function readFileOp(path) {
   const fileAbsolutePath = resolve(path);
   const rs = createReadStream(fileAbsolutePath, "utf-8");
   rs.on("error", (err) =>
-    console.error(`Operation failed.\ncd: ${err.message}`)
+    console.error(`Operation failed.${EOL}cd: ${err.message}`)
   );
   rs.on("data", (chunk) => {
     console.log(chunk);
@@ -27,7 +30,9 @@ export function readFileOp(path) {
 
 export async function createFileOp(name) {
   if (!name) {
-    console.error("Invalid input.\nadd: undefined or wrong data in arguments.");
+    console.error(
+      `Invalid input.${EOL}add: undefined or wrong data in arguments.`
+    );
     printWorkingDirectory();
     return;
   }
@@ -41,7 +46,7 @@ export async function createFileOp(name) {
     });
     console.log(`File ${name} created`);
   } catch (err) {
-    console.error(`Operation failed.\nadd: ${err.message}`);
+    console.error(`Operation failed.${EOL}add: ${err.message}`);
   } finally {
     printWorkingDirectory();
   }
@@ -49,7 +54,9 @@ export async function createFileOp(name) {
 
 export async function deleteFileOp(path) {
   if (!path) {
-    console.error("Invalid input.\nrm: undefined or wrong data in arguments.");
+    console.error(
+      `Invalid input.${EOL}rm: undefined or wrong data in arguments.`
+    );
     printWorkingDirectory();
     return;
   }
@@ -60,7 +67,7 @@ export async function deleteFileOp(path) {
     await unlink(fileSrc);
     console.log(`File ${basename(fileSrc)} deleted`);
   } catch (error) {
-    console.error(`Operation failed.\nrm: ${error.message}`);
+    console.error(`Operation failed.${EOL}rm: ${error.message}`);
   } finally {
     printWorkingDirectory();
   }
@@ -68,7 +75,9 @@ export async function deleteFileOp(path) {
 
 export async function renameFileOp(oldName, newName) {
   if (!oldName || !newName) {
-    console.error("Invalid input.\nrn: undefined or wrong data in arguments.");
+    console.error(
+      `Invalid input.${EOL}rn: undefined or wrong data in arguments.`
+    );
     printWorkingDirectory();
     return;
   }
@@ -81,8 +90,8 @@ export async function renameFileOp(oldName, newName) {
     nameValidator(newName);
   } catch (error) {
     if (error.code == "ENOENT")
-      console.error(`Operation failed.\nrn: ${error.message}`);
-    else console.error(`Operation failed.\nrn: ${error.message}`);
+      console.error(`Operation failed.${EOL}rn: ${error.message}`);
+    else console.error(`Operation failed.${EOL}rn: ${error.message}`);
     printWorkingDirectory();
     return 1;
   }
@@ -95,7 +104,7 @@ export async function renameFileOp(oldName, newName) {
       await rename(fileSrc, newNameDest);
       console.log("rn:file renamed");
     } else {
-      console.error(`Operation failed.\nrn: ${error.message}`);
+      console.error(`Operation failed.${EOL}rn: ${error.message}`);
     }
   } finally {
     printWorkingDirectory();
@@ -104,7 +113,9 @@ export async function renameFileOp(oldName, newName) {
 
 export async function coptFileOp(path, newPath) {
   if (!path || !newPath) {
-    console.error("Invalid input.\ncp: undefined or wrong data in arguments.");
+    console.error(
+      `Invalid input.${EOL}cp: undefined or wrong data in arguments.`
+    );
     printWorkingDirectory();
     return;
   }
@@ -117,13 +128,13 @@ export async function coptFileOp(path, newPath) {
   const ws = createWriteStream(copyPath, { flags: "wx" });
 
   rs.on("error", (error) => {
-    console.error(`Operation failed.\ncp: ${error.message}`);
+    console.error(`Operation failed.${EOL}cp: ${error.message}`);
     errCheck = 1;
     printWorkingDirectory();
   });
   ws.on("error", (error) => {
     if (!errCheck) {
-      console.error(`Operation failed.\ncp: ${error.message}`);
+      console.error(`Operation failed.${EOL}cp: ${error.message}`);
       printWorkingDirectory();
     }
     errCheck = 1;
@@ -141,7 +152,9 @@ export async function coptFileOp(path, newPath) {
 
 export async function moveFileOp(path, newPath) {
   if (!path || !newPath) {
-    console.error("Invalid input.\nrm: undefined or wrong data in arguments.");
+    console.error(
+      `Invalid input.${EOL}rm: undefined or wrong data in arguments.`
+    );
     printWorkingDirectory();
     return;
   }
@@ -153,14 +166,14 @@ export async function moveFileOp(path, newPath) {
   let errCheck = 0;
 
   rs.on("error", (error) => {
-    console.error(`Operation failed.\ncp: ${error.message}`);
+    console.error(`Operation failed.${EOL}cp: ${error.message}`);
     errCheck = 1;
     printWorkingDirectory();
   });
 
   ws.on("error", (error) => {
     if (!errCheck) {
-      console.error(`Operation failed.\ncp: ${error.message}`);
+      console.error(`Operation failed.${EOL}cp: ${error.message}`);
       printWorkingDirectory();
     }
     errCheck = 1;
@@ -176,7 +189,7 @@ export async function moveFileOp(path, newPath) {
         printWorkingDirectory();
       }
     } catch (error) {
-      console.error(`Operation failed.\ncp: ${error.message}`);
+      console.error(`Operation failed.${EOL}cp: ${error.message}`);
       printWorkingDirectory();
     }
   });

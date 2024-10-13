@@ -12,6 +12,7 @@ import { compressFileBrotli, decompressFileBrotli } from "./compressionOps.js";
 import { osOps } from "./osOps.js";
 import { printGoodBye, printWorkingDirectory } from "./printOps.js";
 import { runTest } from "../test/testCases.js";
+import { EOL } from "node:os";
 
 const allCommands = {
   up: "up",
@@ -23,7 +24,7 @@ const allCommands = {
   cp: "cp path_to_file path_to_new_directory",
   mv: "mv path_to_file path_to_new_directory",
   rm: "rm path_to_file",
-  os: "\tos --EOL\n\tos --cpus\n\tos --homedir\n\tos --username\n\tos --architecture",
+  os: `\tos --EOL${EOL}\tos --cpus${EOL}\tos --homedir${EOL}\tos --username${EOL}\tos --architecture`,
   hash: "hash path_to_file",
   compress: "compress path_to_file path_to_destination",
   decompress: "decompress path_to_file path_to_destination",
@@ -44,7 +45,9 @@ function checkSpacedPath(data) {
 
   for (let word of splittedData) {
     word.trim();
-    if (brackets.includes(word[0]) && !starter) {
+    if (brackets.includes(word[0]) && word[0] === word.at(-1)) {
+      words.push(word);
+    } else if (brackets.includes(word[0]) && !starter) {
       longPath.push(word);
       starter = word[0];
     } else if (word.at(-1) === starter) {
@@ -85,7 +88,7 @@ export async function commandsController(data) {
       break;
     case "hash":
       const hashRes = await hashOps(sortedInputData[1]);
-      if (hashRes) console.log("Hash for your file\n" + hashRes);
+      if (hashRes) console.log(`Hash for your file${EOL}` + hashRes);
       printWorkingDirectory();
       break;
     case "cat":
@@ -126,7 +129,7 @@ export async function commandsController(data) {
 
     default:
       console.log(
-        `Sorry, no such command as "${sortedInputData[0]}".\nType 'help' to see all available commands`
+        `Sorry, no such command as "${sortedInputData[0]}".${EOL}Type 'help' to see all available commands`
       );
       printWorkingDirectory();
       break;

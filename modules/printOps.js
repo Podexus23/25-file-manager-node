@@ -1,13 +1,16 @@
+import { EOL } from "os";
 import { userData } from "../app.js";
 
 export function printHello(name) {
   process.stdout.write(
-    `Welcome to the File Manager, ${userData.userName || name}!\n`
+    `Welcome to the File Manager, ${userData.userName || name}!${EOL}`
   );
 }
 export function printGoodBye(name) {
   process.stdout.write(
-    `Thank you for using File Manager, ${userData.userName || name}, goodbye!\n`
+    `Thank you for using File Manager, ${
+      userData.userName || name
+    }, goodbye!${EOL}`
   );
 }
 export function printWorkingDirectory(path) {

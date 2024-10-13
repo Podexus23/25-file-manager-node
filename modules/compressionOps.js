@@ -2,11 +2,12 @@ import { basename, extname, join, resolve } from "node:path";
 import { createReadStream, createWriteStream } from "node:fs";
 import { printWorkingDirectory } from "./printOps.js";
 import { createBrotliCompress, createBrotliDecompress } from "node:zlib";
+import { EOL } from "node:os";
 
 export async function compressFileBrotli(file, destFile) {
   if (!file || !destFile) {
     console.error(
-      "Invalid input.\ncompress: undefined or wrong data in arguments."
+      `Invalid input.${EOL}compress: undefined or wrong data in arguments.`
     );
     printWorkingDirectory();
     return;
@@ -25,12 +26,12 @@ export async function compressFileBrotli(file, destFile) {
   const gzip = createBrotliCompress();
 
   rs.on("error", (error) => {
-    console.error(`Operation failed.\nrn: ${error.message}`);
+    console.error(`Operation failed.${EOL}rn: ${error.message}`);
     errCheck++;
   });
 
   ws.on("error", (error) => {
-    if (!errCheck) console.error(`Operation failed.\nrn: ${error.message}`);
+    if (!errCheck) console.error(`Operation failed.${EOL}rn: ${error.message}`);
     errCheck++;
   });
 
@@ -44,7 +45,7 @@ export async function compressFileBrotli(file, destFile) {
 export async function decompressFileBrotli(file, dest) {
   if (!file || !dest) {
     console.error(
-      "Invalid input.\ncompress: undefined or wrong data in arguments."
+      `Invalid input.${EOL}compress: undefined or wrong data in arguments.`
     );
     printWorkingDirectory();
     return;
@@ -63,12 +64,12 @@ export async function decompressFileBrotli(file, dest) {
   let errCheck = 0;
 
   ws.on("error", (error) => {
-    if (!errCheck) console.error(`Operation failed.\nrn: ${error.message}`);
+    if (!errCheck) console.error(`Operation failed.${EOL}rn: ${error.message}`);
     errCheck++;
   });
 
   rs.on("error", (error) => {
-    console.error(`Operation failed.\nrn: ${error.message}`);
+    console.error(`Operation failed.${EOL}rn: ${error.message}`);
     errCheck++;
   });
 

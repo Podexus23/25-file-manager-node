@@ -1,24 +1,7 @@
-// things to check
-
 import { createWriteStream } from "node:fs";
 import { commandsController } from "../modules/controller.js";
 import { userData } from "../app.js";
 import { join } from "node:path";
-
-/**
- * BASIC WITH FILES
- *
- * COMPRESS
- * compress
- * empty check for both Error(Invalid input)
- * if no such path for first Error(Operation failed: wrong path)
- * if no such path for second Error(Operation failed: wrong path)
- *
- * decompress
- * empty check for both Error(Invalid input)
- * if no such path for first Error(Operation failed: wrong path)
- * if no such path for second Error(Operation failed: wrong path)
- */
 
 async function createFileToTest() {
   const data = "some data to read";
@@ -31,7 +14,6 @@ async function createFileToTest() {
   ws.close();
 }
 
-//NAVIGATION
 function navigationTest() {
   //run up to see diretory
   commandsController("up");

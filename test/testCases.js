@@ -13,13 +13,11 @@ import { join } from "node:path";
  * empty check for both Error(Invalid input)
  * if no such path for first Error(Operation failed: wrong path)
  * if no such path for second Error(Operation failed: wrong path)
- * if filename exists, add "_c" to filename"
  *
  * decompress
  * empty check for both Error(Invalid input)
  * if no such path for first Error(Operation failed: wrong path)
  * if no such path for second Error(Operation failed: wrong path)
- * if filename exists, add "_dc" to filename"
  */
 
 async function createFileToTest() {
@@ -193,5 +191,5 @@ export async function runTest() {
   // await workWithFilesTest("rn");
   // await workWithFilesTest("cp");
   // await workWithFilesTest("mv");
-  await workWithFilesTest("rm");
+  // await workWithFilesTest("rm");
 }
